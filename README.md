@@ -1,4 +1,4 @@
-high performance (simple) hash table
+fast ish (simple) hash table
 ===
 
 WIP
@@ -9,6 +9,10 @@ WIP
 * syntactically similar interface compared to `unordered_map`
 
 more documentation is in `docs`.
+
+benchmarking against a simple hash table and some other implementations. not the most accurate benchmarking though
+
+![](img/example.png)
 
 
 dependencies
@@ -59,12 +63,7 @@ run options:
 ./scripts/run.sh tests                  # runs the unit tests
 ```
 
-any additional arguments supplied after `bench` will be passed as CLI arguments to google benchmark, see the [user guide](https://github.com/google/benchmark/blob/main/docs/user_guide.md). for example,
-
-
-![](img/example.png)
-
-only performs the benchmarks whose name matches that regex pattern, in this case for benchmarks on the medium number of buckets (name prepended by m-space)
+any additional arguments supplied after `bench` will be passed as CLI arguments to google benchmark, see the [user guide](https://github.com/google/benchmark/blob/main/docs/user_guide.md). for example the img above, it only performs the benchmarks whose name matches that regex pattern, in this case for benchmarks on the medium number of buckets (name prepended by m-space)
 
 
 
