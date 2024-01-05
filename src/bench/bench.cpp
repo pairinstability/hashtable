@@ -5,6 +5,7 @@
 #include <memory>
 #include <simplehashtable.h>
 #include <unordered_map>
+#include <absl/hash/hash.h>
 
 // TODO we can make this cleaner, but not priority atm
 // also its definitely suboptimal running each bench sequentially. more accurate to have 1 benchmark per process?
@@ -33,7 +34,7 @@
 
 // lookup an existing element in the hash table
 template <typename MapType, typename KeyType, typename ValueType>
-static void BM_LookupExistingElement(benchmark::State& state)
+static void BM_LookupExistingElementInt(benchmark::State& state)
 {
     KeyType key = 1;
     ValueType value = 42;
@@ -47,20 +48,58 @@ static void BM_LookupExistingElement(benchmark::State& state)
         benchmark::DoNotOptimize(result);
     }
 }
-BENCHMARK(BM_LookupExistingElement<custom::SimpleHashTable<int, int>, int, int>)->Name("s LookupExistingElement SimpleHashTable")->Arg(SMALL_BUCKET_COUNT);
-BENCHMARK(BM_LookupExistingElement<custom::HashTable<int, int>, int, int>)->Name("s LookupExistingElement HashTable")->Arg(SMALL_BUCKET_COUNT);
-BENCHMARK(BM_LookupExistingElement<std::unordered_map<int, int>, int, int>)->Name("s LookupExistingElement std::unordered_map")->Arg(SMALL_BUCKET_COUNT);
-BENCHMARK(BM_LookupExistingElement<boost::unordered_map<int, int>, int, int>)->Name("s LookupExistingElement boost::unordered_map")->Arg(SMALL_BUCKET_COUNT);
+BENCHMARK(BM_LookupExistingElementInt<custom::SimpleHashTable<int, int>, int, int>)->Name("s LookupExistingElement SimpleHashTable")->Arg(SMALL_BUCKET_COUNT);
+BENCHMARK(BM_LookupExistingElementInt<custom::HashTable<int, int>, int, int>)->Name("s LookupExistingElement HashTable")->Arg(SMALL_BUCKET_COUNT);
+BENCHMARK(BM_LookupExistingElementInt<std::unordered_map<int, int>, int, int>)->Name("s LookupExistingElement std::unordered_map")->Arg(SMALL_BUCKET_COUNT);
+BENCHMARK(BM_LookupExistingElementInt<boost::unordered_map<int, int>, int, int>)->Name("s LookupExistingElement boost::unordered_map")->Arg(SMALL_BUCKET_COUNT);
 
-BENCHMARK(BM_LookupExistingElement<custom::SimpleHashTable<int, int>, int, int>)->Name("m LookupExistingElement SimpleHashTable")->Arg(MEDIUM_BUCKET_COUNT);
-BENCHMARK(BM_LookupExistingElement<custom::HashTable<int, int>, int, int>)->Name("m LookupExistingElement HashTable")->Arg(MEDIUM_BUCKET_COUNT);
-BENCHMARK(BM_LookupExistingElement<std::unordered_map<int, int>, int, int>)->Name("m LookupExistingElement std::unordered_map")->Arg(MEDIUM_BUCKET_COUNT);
-BENCHMARK(BM_LookupExistingElement<boost::unordered_map<int, int>, int, int>)->Name("m LookupExistingElement boost::unordered_map")->Arg(MEDIUM_BUCKET_COUNT);
+BENCHMARK(BM_LookupExistingElementInt<custom::SimpleHashTable<int, int>, int, int>)->Name("m LookupExistingElement SimpleHashTable")->Arg(MEDIUM_BUCKET_COUNT);
+BENCHMARK(BM_LookupExistingElementInt<custom::HashTable<int, int>, int, int>)->Name("m LookupExistingElement HashTable")->Arg(MEDIUM_BUCKET_COUNT);
+BENCHMARK(BM_LookupExistingElementInt<std::unordered_map<int, int>, int, int>)->Name("m LookupExistingElement std::unordered_map")->Arg(MEDIUM_BUCKET_COUNT);
+BENCHMARK(BM_LookupExistingElementInt<boost::unordered_map<int, int>, int, int>)->Name("m LookupExistingElement boost::unordered_map")->Arg(MEDIUM_BUCKET_COUNT);
 
-BENCHMARK(BM_LookupExistingElement<custom::SimpleHashTable<int, int>, int, int>)->Name("l LookupExistingElement SimpleHashTable")->Arg(LARGE_BUCKET_COUNT);
-BENCHMARK(BM_LookupExistingElement<custom::HashTable<int, int>, int, int>)->Name("l LookupExistingElement HashTable")->Arg(LARGE_BUCKET_COUNT);
-BENCHMARK(BM_LookupExistingElement<std::unordered_map<int, int>, int, int>)->Name("l LookupExistingElement std::unordered_map")->Arg(LARGE_BUCKET_COUNT);
-BENCHMARK(BM_LookupExistingElement<boost::unordered_map<int, int>, int, int>)->Name("l LookupExistingElement boost::unordered_map")->Arg(LARGE_BUCKET_COUNT);
+BENCHMARK(BM_LookupExistingElementInt<custom::SimpleHashTable<int, int>, int, int>)->Name("l LookupExistingElement SimpleHashTable")->Arg(LARGE_BUCKET_COUNT);
+BENCHMARK(BM_LookupExistingElementInt<custom::HashTable<int, int>, int, int>)->Name("l LookupExistingElement HashTable")->Arg(LARGE_BUCKET_COUNT);
+BENCHMARK(BM_LookupExistingElementInt<std::unordered_map<int, int>, int, int>)->Name("l LookupExistingElement std::unordered_map")->Arg(LARGE_BUCKET_COUNT);
+BENCHMARK(BM_LookupExistingElementInt<boost::unordered_map<int, int>, int, int>)->Name("l LookupExistingElement boost::unordered_map")->Arg(LARGE_BUCKET_COUNT);
+
+template <typename MapType, typename KeyType, typename ValueType>
+static void BM_LookupExistingElementString(benchmark::State& state)
+{
+    KeyType key = "alpha";
+    ValueType value = 42;
+
+    size_t numElements = static_cast<size_t>(state.range(0));
+    auto map = std::make_shared<MapType>(numElements);
+    map->insert({ key, value });
+
+    for (auto _ : state) {
+        volatile auto result = map->find(key);
+        benchmark::DoNotOptimize(result);
+    }
+}
+
+
+BENCHMARK(BM_LookupExistingElementString<custom::SimpleHashTable<string, int>, string, int>)->Name("s LookupExistingElementStr SimpleHashTable")->Arg(SMALL_BUCKET_COUNT);
+BENCHMARK(BM_LookupExistingElementString<custom::HashTable<string, int>, string, int>)->Name("s LookupExistingElementStr HashTable")->Arg(SMALL_BUCKET_COUNT);
+BENCHMARK(BM_LookupExistingElementString<custom::HashTable<string, int, absl::Hash<string>>, string, int>)->Name("s LookupExistingElementStrAbsl HashTable")->Arg(SMALL_BUCKET_COUNT);
+BENCHMARK(BM_LookupExistingElementString<std::unordered_map<string, int>, string, int>)->Name("s LookupExistingElementStr std::unordered_map")->Arg(SMALL_BUCKET_COUNT);
+BENCHMARK(BM_LookupExistingElementString<boost::unordered_map<string, int>, string, int>)->Name("s LookupExistingElementStr boost::unordered_map")->Arg(SMALL_BUCKET_COUNT);
+
+BENCHMARK(BM_LookupExistingElementString<custom::SimpleHashTable<string, int>, string, int>)->Name("m LookupExistingElementStr SimpleHashTable")->Arg(MEDIUM_BUCKET_COUNT);
+BENCHMARK(BM_LookupExistingElementString<custom::HashTable<string, int>, string, int>)->Name("m LookupExistingElementStr HashTable")->Arg(MEDIUM_BUCKET_COUNT);
+BENCHMARK(BM_LookupExistingElementString<custom::HashTable<string, int, absl::Hash<string>>, string, int>)->Name("m LookupExistingElementStrAbsl HashTable")->Arg(MEDIUM_BUCKET_COUNT);
+BENCHMARK(BM_LookupExistingElementString<std::unordered_map<string, int>, string, int>)->Name("m LookupExistingElementStr std::unordered_map")->Arg(MEDIUM_BUCKET_COUNT);
+BENCHMARK(BM_LookupExistingElementString<boost::unordered_map<string, int>, string, int>)->Name("m LookupExistingElementStr boost::unordered_map")->Arg(MEDIUM_BUCKET_COUNT);
+
+BENCHMARK(BM_LookupExistingElementString<custom::SimpleHashTable<string, int>, string, int>)->Name("l LookupExistingElementStr SimpleHashTable")->Arg(LARGE_BUCKET_COUNT);
+BENCHMARK(BM_LookupExistingElementString<custom::HashTable<string, int>, string, int>)->Name("l LookupExistingElementStr HashTable")->Arg(LARGE_BUCKET_COUNT);
+BENCHMARK(BM_LookupExistingElementString<custom::HashTable<string, int, absl::Hash<string>>, string, int>)->Name("l LookupExistingElementStrAbsl HashTable")->Arg(LARGE_BUCKET_COUNT);
+BENCHMARK(BM_LookupExistingElementString<std::unordered_map<string, int>, string, int>)->Name("l LookupExistingElementSTr std::unordered_map")->Arg(LARGE_BUCKET_COUNT);
+BENCHMARK(BM_LookupExistingElementString<boost::unordered_map<string, int>, string, int>)->Name("l LookupExistingElementStr boost::unordered_map")->Arg(LARGE_BUCKET_COUNT);
+
+
+
 
 // lookup a non-existing element in the hash table
 template <typename MapType, typename KeyType, typename ValueType>

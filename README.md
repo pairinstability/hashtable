@@ -37,15 +37,15 @@ google test is installed through cmake.
 usage
 ---
 
-in short, `compile.sh` builds the benchmarking, examples, and unit tests and dependencies, and `run.sh` runs them.
+in short, `build.sh` builds the benchmarking, examples, and unit tests and dependencies, and `run.sh` runs them.
 
 build options:
 
 ```sh
-./scripts/compile.sh                    # builds tests, examples, and benchmarking (everything)
-./scripts/compile.sh examples           # builds the examples that use the hash table library
-./scripts/compile.sh bench              # builds the benchmarking suite which uses the hash table library, a simple version, and other deps. uses googlebenchmark
-./scripts/compile.sh tests              # builds the unit tests using the hash table library. uses googletest
+./scripts/build.sh                    # builds tests, examples, and benchmarking (everything)
+./scripts/build.sh examples           # builds the examples that use the hash table library
+./scripts/build.sh bench              # builds the benchmarking suite which uses the hash table library, a simple version, and other deps. uses googlebenchmark
+./scripts/build.sh tests              # builds the unit tests using the hash table library. uses googletest
 ```
 
 run options:

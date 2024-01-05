@@ -9,6 +9,6 @@ enable_testing()
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 add_executable(runtests test.cpp)
-target_link_libraries(runtests PRIVATE libhashtable GTest::GTest)
+target_link_libraries(runtests PRIVATE libhashtable GTest::GTest absl::hash)
 
 add_test(runtests hash)

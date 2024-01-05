@@ -1,9 +1,12 @@
+#include <absl/hash/hash.h>
 #include <gtest/gtest.h>
 #include <hashtable.h>
 
 using namespace custom;
 
-TEST(HashTableTest, InsertAndFind)
+// TODO: add more comprehensive tests at some point
+
+TEST(HashTableTest, InsertAndFindInt)
 {
     HashTable<int, int> table;
 
@@ -20,7 +23,41 @@ TEST(HashTableTest, InsertAndFind)
     EXPECT_EQ(result.first->value, 100);
 }
 
-TEST(HashTableTest, Erase)
+TEST(HashTableTest, InsertAndFindString)
+{
+    HashTable<string, int> table;
+
+    auto result = table.insert({ "alpha", 100 });
+    ASSERT_TRUE(result.second);
+    EXPECT_EQ(result.first->value, 100);
+
+    auto found = table.find("alpha");
+    ASSERT_NE(found, table.end());
+    EXPECT_EQ(found->value, 100);
+
+    result = table.insert({ "alpha", 200 });
+    ASSERT_FALSE(result.second);
+    EXPECT_EQ(result.first->value, 100);
+}
+
+TEST(HashTableTest, InsertAndFindStringHash)
+{
+    HashTable<string, int, absl::Hash<string>> table;
+
+    auto result = table.insert({ "alpha", 100 });
+    ASSERT_TRUE(result.second);
+    EXPECT_EQ(result.first->value, 100);
+
+    auto found = table.find("alpha");
+    ASSERT_NE(found, table.end());
+    EXPECT_EQ(found->value, 100);
+
+    result = table.insert({ "alpha", 200 });
+    ASSERT_FALSE(result.second);
+    EXPECT_EQ(result.first->value, 100);
+}
+
+TEST(HashTableTest, EraseInt)
 {
     HashTable<int, int> table;
 
@@ -31,7 +68,18 @@ TEST(HashTableTest, Erase)
     EXPECT_EQ(table.find(42), table.end());
 }
 
-TEST(HashTableTest, Clear)
+TEST(HashTableTest, EraseString)
+{
+    HashTable<string, int> table;
+
+    EXPECT_FALSE(table.erase("bravo"));
+
+    table.insert({ "bravo", 100 });
+    EXPECT_TRUE(table.erase("bravo"));
+    EXPECT_EQ(table.find("bravo"), table.end());
+}
+
+TEST(HashTableTest, ClearInt)
 {
     HashTable<int, int> table;
 
@@ -44,18 +92,6 @@ TEST(HashTableTest, Clear)
     EXPECT_EQ(table.size(), 0);
     EXPECT_EQ(table.find(42), table.end());
     EXPECT_EQ(table.find(43), table.end());
-}
-
-TEST(runtests, test)
-{
-    auto ht = custom::HashTable<int, int>(100);
-
-    int key = 1;
-    int value = 1;
-    auto ret = ht.insert({ key, value });
-    auto val = ht.find(key);
-
-    EXPECT_EQ(1, val->value);
 }
 
 int main(int argc, char** argv)
