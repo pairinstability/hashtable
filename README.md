@@ -61,39 +61,10 @@ run options:
 
 any additional arguments supplied after `bench` will be passed as CLI arguments to google benchmark, see the [user guide](https://github.com/google/benchmark/blob/main/docs/user_guide.md). for example,
 
-```sh
-% ./scripts/run.sh bench --benchmark_filter="l "   
-2023-12-30T22:44:24+00:00
-Running /home/hubble/hashtable/build/runbench
-Run on (8 X 2495.31 MHz CPU s)
-CPU Caches:
-  L1 Data 32 KiB (x8)
-  L1 Instruction 32 KiB (x8)
-  L2 Unified 512 KiB (x8)
-  L3 Unified 16384 KiB (x1)
-Load Average: 0.03, 0.15, 0.16
-------------------------------------------------------------------------------------------------------------
-Benchmark                                                     Time             CPU   Iterations cache-misses
-------------------------------------------------------------------------------------------------------------
-l LookupExistingElement SimpleHashTable/1031               1.55 ns         1.55 ns    385960697     18.0511u
-l LookupExistingElement HashTable/1031                    0.344 ns        0.344 ns   2050634117     5.35542u
-l LookupExistingElement std::unordered_map/1031            1.13 ns         1.13 ns    612335931     9.05875u
-l LookupExistingElement boost::unordered_map/1031          3.50 ns         3.50 ns    200092250     41.5858u
-l LookupNonexistentElement SimpleHashTable/1031            1.29 ns         1.29 ns    520155293     15.3858u
-l LookupNonexistentElement HashTable/1031                 0.339 ns        0.339 ns   2089245369     3.57402u
-l LookupNonexistentElement std::unordered_map/1031        0.978 ns        0.977 ns    720767050     13.5633u
-l LookupNonexistentElement boost::unordered_map/1031      0.718 ns        0.718 ns   1028066041     23.1084u
-l InsertRandomNumbers SimpleHashTable/1031                 6.97 ns         6.97 ns    100085527     240.354u
-l InsertRandomNumbers HashTable/1031                      0.612 ns        0.612 ns   1094680975     2.55691u
-l InsertRandomNumbers std::unordered_map/1031              24.0 ns         24.0 ns     29894863     2.61707m
-l InsertRandomNumbers boost::unordered_map/1031            7.03 ns         7.03 ns    100477310     149.785u
-l EraseElements SimpleHashTable/1031                       23.4 ns         23.4 ns     31042879     6.78313m
-l EraseElements HashTable/1031                             12.9 ns         12.9 ns     55097251     264.913u
-l EraseElements std::unordered_map/1031                    31.4 ns         31.4 ns     22511155      3.1519m
-l EraseElements boost::unordered_map/1031                  24.2 ns         24.2 ns     29702860     4.89963m
-```
 
-only performs the benchmarks whose name matches that regex pattern, in this case for benchmarks on the large number of buckets (name prepended by l-space)
+![](img/example.png)
+
+only performs the benchmarks whose name matches that regex pattern, in this case for benchmarks on the medium number of buckets (name prepended by m-space)
 
 
 

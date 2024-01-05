@@ -7,3 +7,4 @@ bin
 .vscode
 # other
 perf.data*
+.DS_Store
